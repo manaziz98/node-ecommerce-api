@@ -3,6 +3,8 @@ const app = express();
 require('dotenv').config();
 const cors = require("cors");
 const path = require("path");
+const fs = require('fs');
+const YAML = require('yaml');
 const connectDB = require("./config/db")
 const seedDB = require("./data/seedDB")
 const swaggerJsdoc = require('swagger-jsdoc');
@@ -10,6 +12,7 @@ const swaggerUi = require('swagger-ui-express');
 const authRoutes = require('./routes/authRoutes');
 const itemRoutes = require('./routes/itemRoutes');
 const userRoutes = require('./routes/userRoutes');
+const orderRoutes = require('./routes/orderRoutes');
 
 app.use(express.json());
 app.use(cors());
@@ -34,12 +37,15 @@ const swaggerOptions = {
   
   const swaggerSpec = swaggerJsdoc(swaggerOptions);
   
+  fs.writeFileSync('swagger.yaml', YAML.stringify(swaggerSpec));
+  
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Routes
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/items', itemRoutes);
+app.use('/api/v1/orders', orderRoutes);
 
 
 // Catch-all route for handling "Not Found" requests

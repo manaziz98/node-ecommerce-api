@@ -119,11 +119,21 @@ router.post('/login', validateData, async (req, res, next) => {
  *         description: User created successfully
  *         content:
  *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 user:
- *                   $ref: '#/components/schemas/User'
+ *            schema:
+ *              type: object
+ *              properties:
+ *                username:
+ *                  type: string
+ *                fullname:
+ *                  type: string
+ *                email:
+ *                  type: string
+ *                password:
+ *                  type: string
+ *                role:
+ *                  type: string
+ *                isActive:
+ *                  type: boolean
  *       400:
  *         description: User already exists or invalid data provided
  *         content:

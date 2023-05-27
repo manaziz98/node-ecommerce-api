@@ -216,7 +216,6 @@ router.put('/:id', isAuth, hasRole(["Admin"]), async (req, res) => {
     }
   });
 
-
 /**
  * @swagger
  * /api/v1/orders/{id}:
@@ -330,20 +329,18 @@ router.patch('/:id', isAuth, hasRole(["Admin"]), async (req, res) => {
  */
 router.delete('/:id', isAuth, hasRole(["Admin"]), async (req, res) => {
     try {
-      // Find the order by id
-      const order = await Order.findById(req.params.id);
-  
-      if (!order) {
-        res.status(404).json({ error: 'Order not found' });
-        return;
-      }
-  
-      // Delete the order
-      await order.remove();
+      // Find the item by id and delete it
+    const deletedOrder = await Order.findByIdAndDelete(req.params.id);
+
+    if (!deletedOrder) {
+      res.status(404).json({ error: 'Order not found' });
+    } else {
+      res.status(204).end();
+    }
   
       res.status(204).end();
     } catch (error) {
-      res.status(500).json({ error: 'Server error' });
+      res.status(500).json({ error: 'Server error ' });
     }
   });
 

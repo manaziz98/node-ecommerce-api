@@ -99,6 +99,98 @@ router.get('/', isAuth, hasRole(["Admin"]), async (req, res) => {
 
 /**
  * @swagger
+ * /api/v1/users:
+ *   post:
+ *     summary: Add a new user
+ *     description: Add a new user with the specified details
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *               fullname:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *               role:
+ *                 type: string
+ *                 enum: ['Admin', 'Owner', 'Client']
+ *     responses:
+ *       201:
+ *         description: User created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       400:
+ *         description: Invalid request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       403:
+ *         description: Forbidden
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
+router.post('/', isAuth, hasRole(['Admin']), async (req, res) => {
+  try {
+    const { username, fullname, email, password, role } = req.body;
+
+    // Validate the request body fields
+    if (!username || !fullname || !email || !password || !role) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+
+    // Check if the user already exists
+    const existingUser = await User.findOne({ username });
+    if (existingUser) {
+      return res.status(400).json({ error: 'User with this username already exists' });
+    }
+
+    // Create the new user
+    const newUser = new User({
+      username,
+      fullname,
+      email,
+      password,
+      role,
+    });
+
+    // Save the user to the database
+    await newUser.save();
+
+    // Return the newly created user
+    res.status(201).json(newUser);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+module.exports = router;
+
+
+
+/**
+ * @swagger
  * /api/v1/users/{id}:
  *   get:
  *     summary: Get user by ID
@@ -206,7 +298,7 @@ router.put('/:id', isAuth, hasRole(["Admin"]), async (req, res) => {
     if (!updatedUser) {
       res.status(404).json({ error: 'User not found' });
     } else {
-      res.status(200).json(updatedUser);
+      res.status(203).json(updatedUser);
     }
   } catch (error) {
     res.status(400).json({ error: 'Invalid request' });

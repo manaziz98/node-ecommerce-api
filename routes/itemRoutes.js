@@ -44,7 +44,21 @@ const { isAuth, isOwner, hasRole } = require("../middlewares/authMiddleware")
  *                 items:
  *                   type: array
  *                   items:
- *                     $ref: '#/components/schemas/Item'
+ *                     type: object
+ *                     properties:
+ *                       name:
+ *                         type: string
+ *                       price:
+ *                         type: number
+ *                       description:
+ *                         type: string
+ *                       quantity:
+ *                         type: number
+ *                       image:
+ *                         type: string
+ *                       owner:
+ *                         type: string
+ *                         format: ObjectId
  *                 currentPage:
  *                   type: integer
  *                 totalPages:
@@ -123,10 +137,8 @@ router.get('/', async (req, res) => {
  *               image:
  *                 type: string
  *               owner:
- *                  type: object
- *                  properties:
- *                   id:
- *                     type: string
+ *                 type: string
+ *                 format: ObjectId
  *     responses:
  *       201:
  *         description: Item created successfully
@@ -135,8 +147,19 @@ router.get('/', async (req, res) => {
  *             schema:
  *               type: object
  *               properties:
- *                 Item:
- *                   $ref: '#/components/schemas/item'
+ *                name:
+ *                  type: string
+ *                price:
+ *                  type: number
+ *                description:
+ *                  type: string
+ *                quantity:
+ *                  type: number
+ *                image:
+ *                  type: string
+ *                owner:
+ *                  type: string
+ *                  format: ObjectId
  *       400:
  *         description: Invalid request
  *         content:
@@ -178,7 +201,21 @@ router.post('/', isAuth, hasRole(["Admin", "Owner"]), async (req, res) => {
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Item'
+ *               type: object
+ *               properties:
+ *                name:
+ *                  type: string
+ *                price:
+ *                  type: number
+ *                description:
+ *                  type: string
+ *                quantity:
+ *                  type: number
+ *                image:
+ *                  type: string
+ *                owner:
+ *                  type: string
+ *                  format: ObjectId
  *       404:
  *         description: Item not found
  *         content:
@@ -233,15 +270,43 @@ router.get('/:id', async (req, res) => {
  *       required: true
  *       content:
  *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/Item'
+ *            schema:
+ *              type: object
+ *              properties:
+ *               name:
+ *                 type: string
+ *               price:
+ *                 type: number
+ *               description:
+ *                 type: string
+ *               quantity:
+ *                 type: number
+ *               image:
+ *                 type: string
+ *               owner:
+ *                 type: string
+ *                 format: ObjectId
  *     responses:
  *       203:
  *         description: Item updated successfully
  *         content:
  *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Item'
+ *              schema:
+ *                 type: object
+ *                 properties:
+ *                  name:
+ *                    type: string
+ *                  price:
+ *                    type: number
+ *                  description:
+ *                    type: string
+ *                  quantity:
+ *                    type: number
+ *                  image:
+ *                    type: string
+ *                  owner:
+ *                    type: string
+ *                    format: ObjectId
  *       404:
  *         description: Item not found
  *         content:
