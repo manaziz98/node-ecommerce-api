@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const { body, validationResult } = require('express-validator');
 const Item = require('../models/item');
+
 // Middleware to validate the request body
 const validateData = [
     // Specify validation rules using `body()` function

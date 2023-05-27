@@ -53,7 +53,7 @@ app.use((req, res, next) => {
     res.status(404).json({error: 'Not Found 404'});
 });
 
-app.listen(3000, () => {
+app.listen(process.env.PORT, () => {
     console.log("server running on port 3000");
 });
 
