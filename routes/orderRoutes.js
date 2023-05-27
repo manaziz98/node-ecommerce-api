@@ -3,8 +3,45 @@ const router = express.Router();
 const Order = require('../models/order');
 const { isAuth, hasRole } = require("../middlewares/authMiddleware");
 
-// POST /api/v1/orders
-// Create an order
+/**
+ * @swagger
+ * tags:
+ *   name: Orders
+ *   description: Order management endpoints
+ */
+
+/**
+ * @swagger
+ * /api/v1/orders:
+ *   post:
+ *     summary: Create an order
+ *     description: Create a new order
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Order'
+ *     responses:
+ *       201:
+ *         description: Order created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Order'
+ *       400:
+ *         description: Invalid request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ */
 router.post('/', isAuth, hasRole(["Client"]), async (req, res) => {
   try {
     // Create a new order using the request body
@@ -16,8 +53,34 @@ router.post('/', isAuth, hasRole(["Client"]), async (req, res) => {
   }
 });
 
-// GET /api/v1/orders
-// Get all orders
+/**
+ * @swagger
+ * /api/v1/orders:
+ *   get:
+ *     summary: Get all orders
+ *     description: Retrieve all orders
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Successful operation
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Order'
+ *       500:
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ */
 router.get('/', isAuth, hasRole(["Admin"]), async (req, res) => {
     try {
       const orders = await Order.find().populate('client');
@@ -28,8 +91,48 @@ router.get('/', isAuth, hasRole(["Admin"]), async (req, res) => {
     }
 });
 
-// GET /api/v1/orders/:id
-// Get order by id
+/**
+ * @swagger
+ * /api/v1/orders/{id}:
+ *   get:
+ *     summary: Get order by ID
+ *     description: Retrieve an order by its ID
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Order ID
+ *     responses:
+ *       200:
+ *         description: Successful operation
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Order'
+ *       404:
+ *         description: Order not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *       500:
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ */
 router.get('/:id', isAuth, hasRole(["Admin"]), async (req, res) => {
     try {
       // Find the order by id
@@ -45,8 +148,54 @@ router.get('/:id', isAuth, hasRole(["Admin"]), async (req, res) => {
     }
   });
 
-// PUT /api/v1/orders/:id
-// Update order by id (only admin)
+/**
+ * @swagger
+ * /api/v1/orders/{id}:
+ *   put:
+ *     summary: Update order by ID
+ *     description: Update an order by its ID (only admin)
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Order ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Order'
+ *     responses:
+ *       200:
+ *         description: Order updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Order'
+ *       404:
+ *         description: Order not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *       400:
+ *         description: Invalid request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ */
 router.put('/:id', isAuth, hasRole(["Admin"]), async (req, res) => {
     try {
       // Find the order by id
@@ -68,8 +217,59 @@ router.put('/:id', isAuth, hasRole(["Admin"]), async (req, res) => {
   });
 
 
-// PATCH /api/v1/orders/:id
-// Change order status by id (only admin)
+/**
+ * @swagger
+ * /api/v1/orders/{id}:
+ *   patch:
+ *     summary: Change order status by ID
+ *     description: Change the status of an order by its ID (only admin)
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Order ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               status:
+ *                 type: string
+ *             required:
+ *               - status
+ *     responses:
+ *       200:
+ *         description: Order status changed successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Order'
+ *       404:
+ *         description: Order not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *       400:
+ *         description: Invalid request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ */
 router.patch('/:id', isAuth, hasRole(["Admin"]), async (req, res) => {
     try {
       // Find the order by id
@@ -90,8 +290,44 @@ router.patch('/:id', isAuth, hasRole(["Admin"]), async (req, res) => {
     }
   });
 
-// DELETE /api/v1/orders/:id
-// Delete order by id
+/**
+ * @swagger
+ * /api/v1/orders/{id}:
+ *   delete:
+ *     summary: Delete order by ID
+ *     description: Delete an order by its ID
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Order ID
+ *     responses:
+ *       204:
+ *         description: Order deleted successfully
+ *       404:
+ *         description: Order not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *       500:
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ */
 router.delete('/:id', isAuth, hasRole(["Admin"]), async (req, res) => {
     try {
       // Find the order by id

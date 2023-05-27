@@ -5,6 +5,8 @@ const cors = require("cors");
 const path = require("path");
 const connectDB = require("./config/db")
 const seedDB = require("./data/seedDB")
+const swaggerJsdoc = require('swagger-jsdoc');
+const swaggerUi = require('swagger-ui-express');
 const authRoutes = require('./routes/authRoutes');
 const itemRoutes = require('./routes/itemRoutes');
 const userRoutes = require('./routes/userRoutes');
@@ -16,6 +18,23 @@ app.use(cors());
     await connectDB()
     // await seedDB()
 })()
+
+// Swagger configuration options
+const swaggerOptions = {
+    definition: {
+      openapi: '3.0.0',
+      info: {
+        title: 'Your API Documentation',
+        version: '1.0.0',
+        description: 'API documentation for your Express.js application',
+      },
+    },
+    apis: ['./routes/*.js'], // Path to your route files
+  };
+  
+  const swaggerSpec = swaggerJsdoc(swaggerOptions);
+  
+  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Routes
 app.use('/api/v1/auth', authRoutes);

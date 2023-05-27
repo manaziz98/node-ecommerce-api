@@ -3,8 +3,64 @@ const router = express.Router();
 const Item = require('../models/item');
 const { isAuth, isOwner, hasRole } = require("../middlewares/authMiddleware")
 
-// GET /api/v1/items?q
-// Querying items (pagination and search)
+/**
+ * @swagger
+ * tags:
+ *   name: Items
+ *   description: Item management endpoints
+ */
+
+/**
+ * @swagger
+ * /api/v1/items:
+ *   get:
+ *     summary: Get all items
+ *     description: Retrieve all items with pagination and search
+ *     tags: [Items]
+ *     parameters:
+ *       - in: query
+ *         name: q
+ *         schema:
+ *           type: string
+ *         description: Search query for item name
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *         description: Page number for pagination
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *         description: Number of items per page
+ *     responses:
+ *       200:
+ *         description: Successful operation
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 items:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Item'
+ *                 currentPage:
+ *                   type: integer
+ *                 totalPages:
+ *                   type: integer
+ *                 totalCount:
+ *                   type: integer
+ *       500:
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ */
 router.get('/', async (req, res) => {
     try {
       // Extract the query parameters from req.query
@@ -40,8 +96,38 @@ router.get('/', async (req, res) => {
   });
   
 
-// POST /api/v1/items
-// Add item
+/**
+ * @swagger
+ * /api/v1/items:
+ *   post:
+ *     summary: Add an item
+ *     description: Add a new item
+ *     tags: [Items]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Item'
+ *     responses:
+ *       201:
+ *         description: Item created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Item'
+ *       400:
+ *         description: Invalid request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ */
 router.post('/', isAuth, hasRole(["Admin", "Owner"]), async (req, res) => {
   try {
     // Create a new item using the request body
@@ -53,8 +139,46 @@ router.post('/', isAuth, hasRole(["Admin", "Owner"]), async (req, res) => {
   }
 });
 
-// GET /api/v1/items/:id
-// Get item by id
+/**
+ * @swagger
+ * /api/v1/items/{id}:
+ *   get:
+ *     summary: Get item by ID
+ *     description: Retrieve an item by its ID
+ *     tags: [Items]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Item ID
+ *     responses:
+ *       200:
+ *         description: Successful operation
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Item'
+ *       404:
+ *         description: Item not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *       500:
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ */
 router.get('/:id', async (req, res) => {
   try {
     // Find the item by id
@@ -70,8 +194,54 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// PUT /api/v1/items/:id
-// Update item by id
+/**
+ * @swagger
+ * /api/v1/items/{id}:
+ *   put:
+ *     summary: Update item by ID
+ *     description: Update an item by its ID
+ *     tags: [Items]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Item ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Item'
+ *     responses:
+ *       203:
+ *         description: Item updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Item'
+ *       404:
+ *         description: Item not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *       400:
+ *         description: Invalid request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ */
 router.put('/:id', isAuth, isOwner, async (req, res) => {
   try {
     // Find the item by id and update its properties based on the request body
@@ -87,8 +257,44 @@ router.put('/:id', isAuth, isOwner, async (req, res) => {
   }
 });
 
-// DELETE /api/v1/items/:id
-// Delete item by id
+/**
+ * @swagger
+ * /api/v1/items/{id}:
+ *   delete:
+ *     summary: Delete item by ID
+ *     description: Delete an item by its ID
+ *     tags: [Items]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Item ID
+ *     responses:
+ *       204:
+ *         description: Item deleted successfully
+ *       404:
+ *         description: Item not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *       500:
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ */
 router.delete('/:id', isAuth, isOwner, async (req, res) => {
   try {
     // Find the item by id and delete it
