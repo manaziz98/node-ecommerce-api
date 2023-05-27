@@ -14,7 +14,7 @@ const jwt = require('jsonwebtoken');
 
 /**
  * @swagger
- * /login:
+ * /api/v1/auth/login:
  *   post:
  *     summary: User login
  *     description: Authenticates a user and generates a JWT token
@@ -90,7 +90,7 @@ router.post('/login', validateData, async (req, res, next) => {
 
 /**
  * @swagger
- * /signup:
+ * /api/v1/auth/signup:
  *   post:
  *     summary: User signup
  *     description: Creates a new user account

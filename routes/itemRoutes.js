@@ -110,14 +110,33 @@ router.get('/', async (req, res) => {
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Item'
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               price:
+ *                 type: number
+ *               description:
+ *                 type: string
+ *               quantity:
+ *                 type: number
+ *               image:
+ *                 type: string
+ *               owner:
+ *                  type: object
+ *                  properties:
+ *                   id:
+ *                     type: string
  *     responses:
  *       201:
  *         description: Item created successfully
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Item'
+ *               type: object
+ *               properties:
+ *                 Item:
+ *                   $ref: '#/components/schemas/item'
  *       400:
  *         description: Invalid request
  *         content:
