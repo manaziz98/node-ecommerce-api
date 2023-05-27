@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/user');
-const { isAuth, hasRole } = require("../middlewares/authMiddleware");
+const { isAuth, hasRole, validateSignupData } = require("../middlewares/authMiddleware");
 
 /**
  * @swagger
@@ -150,14 +150,9 @@ router.get('/', isAuth, hasRole(["Admin"]), async (req, res) => {
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-router.post('/', isAuth, hasRole(['Admin']), async (req, res) => {
+router.post('/', isAuth, hasRole(['Admin']), validateSignupData , async (req, res) => {
   try {
     const { username, fullname, email, password, role } = req.body;
-
-    // Validate the request body fields
-    if (!username || !fullname || !email || !password || !role) {
-      return res.status(400).json({ error: 'Missing required fields' });
-    }
 
     // Check if the user already exists
     const existingUser = await User.findOne({ username });
@@ -172,6 +167,7 @@ router.post('/', isAuth, hasRole(['Admin']), async (req, res) => {
       email,
       password,
       role,
+      joinedAt: new Date()
     });
 
     // Save the user to the database
