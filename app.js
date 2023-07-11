@@ -19,7 +19,6 @@ app.use(cors());
 
 (async () => {
     await connectDB()
-    // await seedDB()
 })()
 
 // Swagger configuration options
